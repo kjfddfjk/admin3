@@ -1,10 +1,7 @@
 package tech.wetech.admin3.sys.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_STORED_EVENT")
 public class StoredEvent extends BaseEntity {
 
   @Lob

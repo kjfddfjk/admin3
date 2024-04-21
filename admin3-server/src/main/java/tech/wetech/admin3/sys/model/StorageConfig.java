@@ -3,6 +3,7 @@ package tech.wetech.admin3.sys.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import tech.wetech.admin3.common.Constants;
 import tech.wetech.admin3.common.SessionItemHolder;
 import tech.wetech.admin3.common.StringUtils;
@@ -16,6 +17,7 @@ import java.util.Map;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_STORAGE_CONFIG")
 public class StorageConfig extends BaseEntity {
 
   private String storageId;
@@ -24,8 +26,7 @@ public class StorageConfig extends BaseEntity {
 
   private Type type;
 
-  @Column(name = "is_default")
-  private Boolean isDefault;
+  private Boolean defaultFlag;
 
   private String accessKey;
 
@@ -70,16 +71,12 @@ public class StorageConfig extends BaseEntity {
     this.name = name;
   }
 
-  public boolean isDefault() {
-    return isDefault != null && isDefault;
+  public Boolean getDefaultFlag() {
+    return defaultFlag;
   }
 
-  public Boolean getIsDefault() {
-    return isDefault;
-  }
-
-  public void setIsDefault(Boolean aDefault) {
-    isDefault = aDefault;
+  public void setDefaultFlag(Boolean defaultFlag) {
+    this.defaultFlag = defaultFlag;
   }
 
   public Type getType() {

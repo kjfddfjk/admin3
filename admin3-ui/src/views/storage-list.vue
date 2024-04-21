@@ -19,9 +19,9 @@
         <el-table-column prop="endpoint" label="Endpoint"></el-table-column>
         <el-table-column prop="address" label="访问地址"></el-table-column>
         <el-table-column prop="storagePath" label="存储目录"></el-table-column>
-        <el-table-column prop="isDefault" label="默认对象存储">
+        <el-table-column prop="defaultFlag" label="默认对象存储">
           <template #default="{ row }">
-            <el-tag effect="dark" link v-if="row.isDefault" v-action:storage:markAsDefault>默认使用</el-tag>
+            <el-tag effect="dark" link v-if="row.defaultFlag" v-action:storage:markAsDefault>默认使用</el-tag>
             <el-popconfirm title="设为默认?" v-else @confirm="handleMarkAsDefaultConfig(row)">
               <template #reference>
                 <el-button link>设为默认</el-button>
@@ -154,7 +154,7 @@ interface Storage {
   accessKey?: string;
   secretKey?: string;
   bucketName?: string;
-  isDefault?: boolean;
+  defaultFlag?: boolean;
   address?: string;
   storagePath?: string;
   createUser?: string;
@@ -170,7 +170,7 @@ class StorageImpl implements Storage {
   accessKey = '';
   secretKey = '';
   bucketName = '';
-  isDefault = false;
+  defaultFlag = false;
   address = '';
   createUser = '';
   createTime = '';
@@ -201,7 +201,7 @@ const handleEdit = (record: any) => {
   form.accessKey = record.accessKey;
   form.secretKey = record.secretKey;
   form.bucketName = record.bucketName;
-  form.isDefault = record.isDefault;
+  form.defaultFlag = record.defaultFlag;
   form.address = record.address;
 
   editVisible.value = true;

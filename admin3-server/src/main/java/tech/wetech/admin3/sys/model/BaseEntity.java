@@ -1,10 +1,7 @@
 package tech.wetech.admin3.sys.model;
 
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -28,7 +25,8 @@ public abstract class BaseEntity {
    * has not been saved is recognizable by a null identity.
    */
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Column(name = "ID")
   private Long id;
 
   public void setId(Long id) {

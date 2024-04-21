@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_SESSION")
 public class Session extends BaseEntity {
 
   @Column(nullable = false)

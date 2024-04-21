@@ -11,6 +11,7 @@ import java.util.Set;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_RESOURCE")
 public class Resource extends BaseEntity {
 
   private String name;
@@ -31,9 +32,9 @@ public class Resource extends BaseEntity {
   private String url;
 
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-  @JoinTable(name = "role_resource",
-    joinColumns = @JoinColumn(name = "resource_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+  @JoinTable(name = "TB_ROLE_RESOURCE",
+    joinColumns = @JoinColumn(name = "RESOURCE_ID", referencedColumnName = "ID"),
+    inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"))
   private Set<Role> roles = new LinkedHashSet<>();
 
   public enum Type {

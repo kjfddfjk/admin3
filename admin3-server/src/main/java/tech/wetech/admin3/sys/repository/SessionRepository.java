@@ -19,12 +19,12 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
   @Transactional
   @Modifying
-  @Query("delete from Session where expireTime <= now() ")
+  @Query("delete from Session where expireTime <= CURRENT_TIMESTAMP ")
   void deleteExpiredSession();
 
   @Transactional
   @Modifying
-  @Query("update Session set expireTime= :expireTime, lastModifiedTime = now() where token = :token")
+  @Query("update Session set expireTime= :expireTime, lastModifiedTime = CURRENT_TIMESTAMP where token = :token")
   void updateExpireTime(String token, LocalDateTime expireTime);
 
   Optional<Session> findByToken(String token);

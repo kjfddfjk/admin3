@@ -2,6 +2,7 @@ package tech.wetech.admin3.infra.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,10 @@ public class LocalSessionManager implements SessionManager {
 
   public LocalSessionManager(SessionRepository sessionRepository) {
     this.sessionRepository = sessionRepository;
+  }
+
+  @PostConstruct
+  public void init() {
     checkSession();
   }
 
@@ -59,7 +64,7 @@ public class LocalSessionManager implements SessionManager {
       } catch (Exception e) {
         log.error("{}", e.getMessage(), e);
       }
-    }, 5, 5, TimeUnit.SECONDS);
+    }, 5, 5, TimeUnit.MINUTES);
   }
 
   @Override

@@ -16,6 +16,7 @@ import static jakarta.persistence.FetchType.LAZY;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_USER")
 public class User extends BaseEntity {
 
   @Column(nullable = false, unique = true)
@@ -33,12 +34,12 @@ public class User extends BaseEntity {
   private LocalDateTime createdTime;
 
   @ManyToMany(fetch = LAZY, cascade = CascadeType.DETACH)
-  @JoinTable(name = "user_role",
-    joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+  @JoinTable(name = "TB_USER_ROLE",
+    joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
+    inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"))
   private Set<Role> roles = new LinkedHashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "id", orphanRemoval = true)
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "id", orphanRemoval = true)
   private Set<UserCredential> credentials = new LinkedHashSet<>();
 
   @OneToOne(fetch = LAZY)

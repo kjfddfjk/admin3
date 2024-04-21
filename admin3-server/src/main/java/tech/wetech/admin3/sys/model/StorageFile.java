@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
  * @author cjbi
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"key"})})
+@Table(name = "TB_STORAGE_FILE", uniqueConstraints = {@UniqueConstraint(columnNames = {"\"KEY\""})})
 public class StorageFile extends BaseEntity {
 
   /**
    * 文件的唯一索引
    */
-  @Column(name = "`key`")
+  @Column(name = "\"KEY\"")
   private String key;
 
   /**
@@ -28,11 +28,13 @@ public class StorageFile extends BaseEntity {
   /**
    * 文件类型
    */
+  @Column(name = "\"TYPE\"")
   private String type;
 
   /**
    * 文件大小
    */
+  @Column(name = "\"SIZE\"")
   private Long size;
 
   /**

@@ -1,6 +1,8 @@
 package tech.wetech.admin3.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.Resource;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/common")
 public class CommonController {
+
+  @Resource
+  private StringRedisTemplate stringRedisTemplate;
 
   private final Admin3Properties admin3Properties;
 

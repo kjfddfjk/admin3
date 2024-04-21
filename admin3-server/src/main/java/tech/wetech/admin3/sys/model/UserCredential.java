@@ -3,6 +3,7 @@ package tech.wetech.admin3.sys.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import tech.wetech.admin3.common.BusinessException;
 import tech.wetech.admin3.common.CommonResultStatus;
 import tech.wetech.admin3.common.SecurityUtil;
@@ -15,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_USER_CREDENTIAL")
 public class UserCredential extends BaseEntity {
 
   /**

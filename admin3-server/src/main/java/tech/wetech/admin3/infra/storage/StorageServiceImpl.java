@@ -86,7 +86,7 @@ public class StorageServiceImpl implements StorageService {
   @Override
   @Transactional
   public void deleteConfig(StorageConfig storageConfig) {
-    if (storageConfig.isDefault()) {
+    if (storageConfig.getDefaultFlag()) {
       throw new StorageException(FAIL, "不能删除默认配置");
     }
     storageConfigRepository.delete(storageConfig);
@@ -96,10 +96,10 @@ public class StorageServiceImpl implements StorageService {
   @Override
   @Transactional
   public void markAsDefault(StorageConfig storageConfig) {
-    storageConfig.setIsDefault(true);
+    storageConfig.setDefaultFlag(true);
     List<StorageConfig> configList = findConfigList();
     for (StorageConfig record : configList) {
-      record.setIsDefault(record.equals(storageConfig));
+      record.setDefaultFlag(record.equals(storageConfig));
     }
     storageConfigRepository.saveAll(configList);
     DomainEventPublisher.instance().publish(new StorageConfigMarkedAsDefault(storageConfig));

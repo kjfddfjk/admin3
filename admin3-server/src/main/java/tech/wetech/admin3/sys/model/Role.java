@@ -13,6 +13,7 @@ import static jakarta.persistence.CascadeType.DETACH;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_ROLE")
 public class Role extends BaseEntity {
 
   @Column(unique = true, nullable = false)
@@ -23,15 +24,15 @@ public class Role extends BaseEntity {
   private Boolean available = Boolean.FALSE;
 
   @ManyToMany(fetch = FetchType.LAZY, cascade = DETACH)
-  @JoinTable(name = "role_resource",
-    joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "resource_id", referencedColumnName = "id"))
+  @JoinTable(name = "TB_ROLE_RESOURCE",
+    joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"),
+    inverseJoinColumns = @JoinColumn(name = "RESOURCE_ID", referencedColumnName = "ID"))
   private Set<Resource> resources = new LinkedHashSet<>();
 
   @ManyToMany(fetch = FetchType.LAZY, cascade = DETACH)
-  @JoinTable(name = "user_role",
-    joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+  @JoinTable(name = "TB_USER_ROLE",
+    joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"),
+    inverseJoinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"))
   private Set<User> users = new LinkedHashSet<>();
 
   public Role() {

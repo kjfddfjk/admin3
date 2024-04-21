@@ -11,7 +11,7 @@ import tech.wetech.admin3.sys.model.StorageConfig;
 @Repository
 public interface StorageConfigRepository extends JpaRepository<StorageConfig, Long> {
 
-  @Query("from StorageConfig where isDefault=true")
+  @Query("from StorageConfig where defaultFlag=true")
   StorageConfig getDefaultConfig();
 
   StorageConfig getByStorageId(String storageId);

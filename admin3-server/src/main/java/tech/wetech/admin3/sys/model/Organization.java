@@ -9,6 +9,7 @@ import java.util.Set;
  * @author cjbi
  */
 @Entity
+@Table(name = "TB_ORGANIZATION")
 public class Organization extends BaseEntity {
 
   @Column(nullable = false)
