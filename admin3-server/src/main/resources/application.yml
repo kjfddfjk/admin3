@@ -6,26 +6,39 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
-      hibernate.auto_quote_keyword: true
+      hibernate:
+        auto_quote_keyword: true
+        dialect: org.hibernate.dialect.OracleDialect
+        show_sql: true
+        hbm2ddl:
+          auto: update
+        id:
+          sequence:
+            increment_size_mismatch_strategy: FIX
   application:
     name: admin3
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/admin3?characterEncoding=utf8
-    username: root
-    password: 123456
+    url: jdbc:oracle:thin:@selforaclecloudatp_high
+    username: admin3
+    password: 1qaz@WSX#EDC
   sql:
     init:
       encoding: utf8
       data-locations: classpath:data.sql
-      mode: always
+      mode: never
       continue-on-error: true
   data:
     web:
       pageable:
         one-indexed-parameters: true
+    redis:
+      database: 0
+      host: 192.168.192.173
+      port: 16379
   profiles:
     include: biz
 server:
   servlet:
     context-path: /admin3
+  port: 8184
+# keytool -importcert -alias GglMySQLCACert -file server-ca.pem \ -keystore truststore -storepass 1qaz@WSX

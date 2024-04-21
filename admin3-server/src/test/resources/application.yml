@@ -10,14 +10,16 @@ spring:
   application:
     name: admin3
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test;MODE=MySQL;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@selforaclecloudatp_high
+    username: admin3
+    password: 1qaz@WSX#EDC
   sql:
     init:
       encoding: utf8
       schema-locations: classpath:schema.sql
       data-locations: classpath:data.sql
-      mode: always
+      mode: never
   data:
     web:
       pageable:
