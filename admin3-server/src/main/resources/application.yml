@@ -8,7 +8,6 @@ spring:
     properties:
       hibernate:
         auto_quote_keyword: true
-        dialect: org.hibernate.dialect.OracleDialect
         show_sql: true
         hbm2ddl:
           auto: update
@@ -40,5 +39,5 @@ spring:
 server:
   servlet:
     context-path: /admin3
-  port: 8184
+  port: 8180
 # keytool -importcert -alias GglMySQLCACert -file server-ca.pem \ -keystore truststore -storepass 1qaz@WSX

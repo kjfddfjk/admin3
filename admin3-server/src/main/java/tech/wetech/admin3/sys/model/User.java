@@ -42,7 +42,7 @@ public class User extends BaseEntity {
   @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, mappedBy = "id", orphanRemoval = true)
   private Set<UserCredential> credentials = new LinkedHashSet<>();
 
-  @OneToOne(fetch = LAZY)
+  @ManyToOne(fetch = LAZY)
   private Organization organization;
 
   public String getOrgFullName() {
@@ -64,7 +64,6 @@ public class User extends BaseEntity {
   /**
    * 获取用户权限列表
    *
-   * @return
    */
   public Set<String> findPermissions() {
     return roles.stream()
