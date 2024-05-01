@@ -16,6 +16,12 @@ import static jakarta.persistence.CascadeType.DETACH;
 @Table(name = "TB_ROLE")
 public class Role extends BaseEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Role_GEN")
+  @SequenceGenerator(name = "Role_GEN", sequenceName = "SEQ_ROLE", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
+
   @Column(unique = true, nullable = false)
   private String name;
 
@@ -37,6 +43,16 @@ public class Role extends BaseEntity {
 
   public Role() {
 
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getName() {

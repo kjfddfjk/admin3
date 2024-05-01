@@ -15,6 +15,12 @@ import java.time.LocalDateTime;
 @Table(name = "TB_SESSION")
 public class Session extends BaseEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Session_GEN")
+  @SequenceGenerator(name = "Session_GEN", sequenceName = "SEQ_SESSION", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
+
   @Column(nullable = false)
   private String token;
   @ManyToOne
@@ -44,6 +50,16 @@ public class Session extends BaseEntity {
     authSession.setActive(true);
     authSession.setData(JsonUtils.stringify(data));
     return authSession;
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getToken() {

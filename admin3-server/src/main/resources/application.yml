@@ -4,13 +4,11 @@ spring:
     defer-datasource-initialization: true
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         auto_quote_keyword: true
         show_sql: true
-        hbm2ddl:
-          auto: update
         id:
           sequence:
             increment_size_mismatch_strategy: FIX
@@ -39,5 +37,7 @@ spring:
 server:
   servlet:
     context-path: /admin3
-  port: 8180
+app:
+  oxr:
+    id: OXR_APP_ID
 # keytool -importcert -alias GglMySQLCACert -file server-ca.pem \ -keystore truststore -storepass 1qaz@WSX

@@ -20,27 +20,14 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-  /**
-   * This identity field has the wrapper class type Long so that an entity which
-   * has not been saved is recognizable by a null identity.
-   */
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  @Column(name = "ID")
-  private Long id;
-
-  public void setId(Long id) {
-    this.id = id;
-  }
+  public abstract void setId(Long id);
 
   /**
    * Returns the identity of this entity object.
    *
    * @return the identity of this entity object
    */
-  public Long getId() {
-    return id;
-  }
+  public abstract Long getId();
 
   @Override
   public boolean equals(final Object object) {
@@ -53,7 +40,7 @@ public abstract class BaseEntity {
     final BaseEntity that = (BaseEntity) object;
     _checkIdentity(this);
     _checkIdentity(that);
-    return this.id.equals(that.getId());
+    return this.getId().equals(that.getId());
   }
 
   /**

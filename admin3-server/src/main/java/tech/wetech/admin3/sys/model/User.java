@@ -19,6 +19,12 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "TB_USER")
 public class User extends BaseEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "User_GEN")
+  @SequenceGenerator(name = "User_GEN", sequenceName = "SEQ_USER", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
+
   @Column(nullable = false, unique = true)
   private String username;
 
@@ -79,6 +85,16 @@ public class User extends BaseEntity {
 
   public enum State {
     NORMAL, LOCKED
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public boolean isLocked() {

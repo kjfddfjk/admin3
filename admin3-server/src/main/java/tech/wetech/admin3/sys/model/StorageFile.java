@@ -14,6 +14,12 @@ import java.time.LocalDateTime;
 @Table(name = "TB_STORAGE_FILE", uniqueConstraints = {@UniqueConstraint(columnNames = {"\"KEY\""})})
 public class StorageFile extends BaseEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "StorageFile_GEN")
+  @SequenceGenerator(name = "StorageFile_GEN", sequenceName = "SEQ_STORAGE_FILE", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
+
   /**
    * 文件的唯一索引
    */
@@ -48,6 +54,16 @@ public class StorageFile extends BaseEntity {
     createTime = LocalDateTime.now();
     UserinfoDTO userInfo = (UserinfoDTO) SessionItemHolder.getItem(Constants.SESSION_CURRENT_USER);
     createUser = userInfo.username();
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getKey() {

@@ -12,13 +12,29 @@ import java.time.LocalDateTime;
 @Table(name = "TB_STORED_EVENT")
 public class StoredEvent extends BaseEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "StoredEvent_GEN")
+  @SequenceGenerator(name = "StoredEvent_GEN", sequenceName = "SEQ_STORED_EVENT", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
+
   @Lob
   @Column(length = Integer.MAX_VALUE)
   private String eventBody;
   private LocalDateTime occurredOn;
   private String typeName;
-  @OneToOne
+  @ManyToOne
   private User user;
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public String getEventBody() {
     return eventBody;

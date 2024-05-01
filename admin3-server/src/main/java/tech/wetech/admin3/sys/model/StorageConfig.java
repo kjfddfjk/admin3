@@ -1,9 +1,6 @@
 package tech.wetech.admin3.sys.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import tech.wetech.admin3.common.Constants;
 import tech.wetech.admin3.common.SessionItemHolder;
 import tech.wetech.admin3.common.StringUtils;
@@ -19,6 +16,12 @@ import java.util.Map;
 @Entity
 @Table(name = "TB_STORAGE_CONFIG")
 public class StorageConfig extends BaseEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "StorageConfig_GEN")
+  @SequenceGenerator(name = "StorageConfig_GEN", sequenceName = "SEQ_STORAGE_CONFIG", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
 
   private String storageId;
 
@@ -53,6 +56,16 @@ public class StorageConfig extends BaseEntity {
 
   public enum Type {
     LOCAL, S3, OSS, OBS
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getStorageId() {

@@ -1,5 +1,9 @@
 -- 关闭表约束检查
-ALTER TABLE tb_user DISABLE CONSTRAINT FKGHXE6AGFVS13H0AG4OQ9OPGD8;
+--ALTER TABLE tb_user DISABLE CONSTRAINT FKGHXE6AGFVS13H0AG4OQ9OPGD8;
+
+INSERT INTO TB_organization (id, name, parent_ids, type, parent_id) VALUES (1, '根节点', '/', 0, null);
+INSERT INTO TB_organization (id, name, parent_ids, type, parent_id) VALUES (2, '水浒传', '/1/', 0, 1);
+INSERT INTO TB_organization (id, name, parent_ids, type, parent_id) VALUES (3, '测试账号', '/1/', 0, 1);
 
 INSERT INTO "TB_USER" (id, avatar, created_time, gender, state, username, organization_id) VALUES (1, 'avatar.jpg', to_date('2023-01-05 17:16:11','yyyy-MM-dd hh24:mi:ss'), 0, 0, 'admin', 1);
 INSERT INTO "TB_USER" (id, avatar, created_time, gender, state, username, organization_id) VALUES (2, 'avatar.jpg', to_date('2023-01-05 17:16:11','yyyy-MM-dd hh24:mi:ss'), 1, 0, 'employee', 3);
@@ -242,14 +246,14 @@ INSERT INTO TB_STORED_EVENT (ID,EVENT_BODY, OCCURRED_ON, TYPE_NAME, "USER_ID") V
 INSERT INTO TB_STORAGE_CONFIG ("TYPE", ID, DEFAULT_FLAG, NAME, ADDRESS, STORAGE_PATH, ACCESS_KEY, BUCKET_NAME, ENDPOINT, SECRET_KEY, CREATE_TIME, CREATE_USER, STORAGE_ID) VALUES (0, 1, 1, '本地', 'storage/fetch/', 'files', null, null, null, null, TO_TIMESTAMP('2023-07-10 17:00:48.000000', 'YYYY-MM-DD HH24:MI:SS.FF'), 'admin', 'SsIPzgpd9rFgxJhe3yUxk');
 
 -- 开启表约束检查
-ALTER TABLE tb_user enable CONSTRAINT FKGHXE6AGFVS13H0AG4OQ9OPGD8;
+--ALTER TABLE tb_user enable CONSTRAINT FKGHXE6AGFVS13H0AG4OQ9OPGD8;
 -- ALTER TABLE USER_ROLE ENABLE CONSTRAINT REFERENTIAL_INTEGRITY;
-alter sequence TB_ORGANIZATION_SEQ increment by 999; select TB_ORGANIZATION_SEQ.nextval from dual; alter sequence TB_ORGANIZATION_SEQ increment by 50;
-alter sequence TB_RESOURCE_SEQ increment by 999; select TB_RESOURCE_SEQ.nextval from dual; alter sequence TB_RESOURCE_SEQ increment by 50;
-alter sequence TB_ROLE_SEQ increment by 999; select TB_ROLE_SEQ.nextval from dual; alter sequence TB_ROLE_SEQ increment by 50;
-alter sequence TB_SESSION_SEQ increment by 999; select TB_SESSION_SEQ.nextval from dual; alter sequence TB_SESSION_SEQ increment by 50;
-alter sequence TB_STORAGE_CONFIG_SEQ increment by 999; select TB_STORAGE_CONFIG_SEQ.nextval from dual; alter sequence TB_STORAGE_CONFIG_SEQ increment by 50;
-alter sequence TB_STORAGE_FILE_SEQ increment by 999; select TB_STORAGE_FILE_SEQ.nextval from dual; alter sequence TB_STORAGE_FILE_SEQ increment by 50;
-alter sequence TB_STORED_EVENT_SEQ increment by 999; select TB_STORED_EVENT_SEQ.nextval from dual; alter sequence TB_STORED_EVENT_SEQ increment by 50;
-alter sequence TB_USER_CREDENTIAL_SEQ increment by 999; select TB_USER_CREDENTIAL_SEQ.nextval from dual; alter sequence TB_USER_CREDENTIAL_SEQ increment by 50;
-alter sequence TB_USER_SEQ increment by 999; select TB_USER_SEQ.nextval from dual; alter sequence TB_USER_SEQ increment by 50;
+alter sequence SEQ_ORGANIZATION increment by 999; select SEQ_ORGANIZATION.nextval from dual; alter sequence SEQ_ORGANIZATION increment by 1;
+alter sequence SEQ_RESOURCE increment by 999; select SEQ_RESOURCE.nextval from dual; alter sequence SEQ_RESOURCE increment by 1;
+alter sequence SEQ_ROLE increment by 999; select SEQ_ROLE.nextval from dual; alter sequence SEQ_ROLE increment by 1;
+alter sequence SEQ_SESSION increment by 999; select SEQ_SESSION.nextval from dual; alter sequence SEQ_SESSION increment by 1;
+alter sequence SEQ_STORAGE_CONFIG increment by 999; select SEQ_STORAGE_CONFIG.nextval from dual; alter sequence SEQ_STORAGE_CONFIG increment by 1;
+alter sequence SEQ_STORAGE_FILE increment by 999; select SEQ_STORAGE_FILE.nextval from dual; alter sequence SEQ_STORAGE_FILE increment by 1;
+alter sequence SEQ_STORED_EVENT increment by 999; select SEQ_STORED_EVENT.nextval from dual; alter sequence SEQ_STORED_EVENT increment by 1;
+alter sequence SEQ_USER_CREDENTIAL increment by 999; select SEQ_USER_CREDENTIAL.nextval from dual; alter sequence SEQ_USER_CREDENTIAL increment by 1;
+alter sequence SEQ_USER increment by 999; select SEQ_USER.nextval from dual; alter sequence SEQ_USER increment by 1;

@@ -14,6 +14,12 @@ import java.util.Set;
 @Table(name = "TB_RESOURCE")
 public class Resource extends BaseEntity {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Resource_GEN")
+  @SequenceGenerator(name = "Resource_GEN", sequenceName = "SEQ_RESOURCE", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
+
   private String name;
 
   private Type type;
@@ -39,6 +45,16 @@ public class Resource extends BaseEntity {
 
   public enum Type {
     MENU, BUTTON
+  }
+
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public String getIcon() {

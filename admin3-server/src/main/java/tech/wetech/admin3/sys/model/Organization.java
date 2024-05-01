@@ -12,6 +12,16 @@ import java.util.Set;
 @Table(name = "TB_ORGANIZATION")
 public class Organization extends BaseEntity {
 
+  /**
+   * This identity field has the wrapper class type Long so that an entity which
+   * has not been saved is recognizable by a null identity.
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Organization_GEN")
+  @SequenceGenerator(name = "Organization_GEN", sequenceName = "SEQ_ORGANIZATION", allocationSize = 1)
+  @Column(name = "ID")
+  private Long id;
+
   @Column(nullable = false)
   private String name;
 
@@ -42,6 +52,15 @@ public class Organization extends BaseEntity {
     return org.getName();
   }
 
+  @Override
+  public Long getId() {
+    return id;
+  }
+
+  @Override
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public String getName() {
     return name;
