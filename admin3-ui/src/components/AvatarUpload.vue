@@ -74,7 +74,7 @@ const saveAvatar = () => {
     .then(blob => {
       const file = new File([blob], "avatar.png", {type: blob.type})
       upload({files: file}).then(res => {
-        emits('onSelect', res.data[0]?.url);
+        emits('onSelect', res.data[0]?.key);
 
       });
     });

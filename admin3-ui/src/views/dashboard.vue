@@ -4,7 +4,7 @@
       <el-col :span="8">
         <el-card shadow="hover" class="mgb20" style="height: 252px">
           <div class="user-info">
-            <el-avatar :size="120" :src="userinfo.avatar"/>
+            <el-avatar :size="120" :src="userinfo.avatarUrl"/>
             <div class="user-info-cont">
               <div class="user-info-name">{{ userinfo.username }}</div>
               <div>hello world</div>
@@ -16,7 +16,7 @@
           </div>
           <div class="user-info-list">
             上次登录地点：
-            <span>东莞</span>
+            <span>中国</span>
           </div>
         </el-card>
         <el-card shadow="hover" style="height: 252px">

@@ -75,9 +75,9 @@
                 <template #default="scope">
                   <el-image
                     class="table-td-thumb"
-                    :src="scope.row.avatar"
+                    :src="scope.row.avatarUrl"
                     :z-index="10"
-                    :preview-src-list="[scope.row.avatar]"
+                    :preview-src-list="[scope.row.avatarUrl]"
                     preview-teleported
                   >
                   </el-image>
@@ -227,7 +227,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="头像">
-          <AvatarUpload :img-src="form.avatar" @on-select="onAvatarSelect"/>
+          <AvatarUpload :img-src="form.avatarUrl" @on-select="onAvatarSelect"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -241,7 +241,7 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from 'vue';
+import {reactive, ref, watch} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import {Delete, Edit, Lock, Plus, Search, Unlock} from '@element-plus/icons-vue';
 import {createUser, deleteUser, disableUser, enableUser, updateUser} from "../api/user";
@@ -254,6 +254,7 @@ import {
 } from "../api/organization";
 import cloneDeep from 'lodash/cloneDeep';
 import AvatarUpload from "../components/AvatarUpload.vue";
+import {getImageUrl, getStorageConfigList} from "../api/storage";
 
 interface OrgTreeNode {
   name: string
@@ -380,6 +381,7 @@ interface TableItem {
   username: string;
   gender: string;
   avatar: string;
+  avatarUrl: string;
   state: string;
   createdTime: string;
   orgFullName: string;
@@ -401,7 +403,10 @@ const getUserData = () => {
     username: query.username || undefined,
     state: query.state || undefined,
   }).then(res => {
-    tableData.value = res.data.list;
+    tableData.value = res.data.list.map((user: { avatar: string; }) => ({
+      ...user,
+      avatarUrl: getImageUrl(user.avatar),
+    }));
     pageTotal.value = res.data.total;
   });
 };
@@ -443,11 +448,20 @@ class User {
   username = '';
   gender = 'MALE';
   avatar = '';
+  avatarUrl = '';
   organizationId = 1;
 }
 
 let id: number = 0;
 let form = reactive(new User());
+watch(() => form.avatar, (newAvatar, oldAvatar) => {
+  console.log('form.avatar changed from', oldAvatar, 'to', newAvatar);
+  if(newAvatar === oldAvatar || !newAvatar) {
+    return;
+  }
+  form.avatarUrl = getImageUrl(newAvatar);
+  console.log('form.AvatarUrl:', form.avatarUrl);
+}, { immediate: true});
 
 const saveAdd = () => {
   form.organizationId = selectedNode.value.id;

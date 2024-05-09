@@ -24,7 +24,7 @@
           <span class="btn-bell-badge" v-if="message"></span>
         </div>
         <!-- 用户头像 -->
-        <el-avatar class="user-avator" :size="30" :src="avatar"/>
+        <el-avatar class="user-avator" :size="30" :src="avatarUrl"/>
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
 					<span class="el-dropdown-link">
@@ -58,6 +58,7 @@ const userinfoStore = useBasicStore();
 const userinfo = userinfoStore.userinfo;
 const username: string | null = userinfo.username;
 const avatar: string | null = userinfo.avatar;
+const avatarUrl: string | null = userinfo.avatarUrl;
 const message: number = 2;
 
 const sidebar = useSidebarStore();

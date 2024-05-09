@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import {fetchUserinfo} from "../api";
+import {getImageUrl} from "../api/storage";
 
 interface UserStore {
     userinfo: {
@@ -7,6 +8,7 @@ interface UserStore {
         userId: number | null;
         username: string;
         avatar: string;
+        avatarUrl: string;
         credential: { identifier: string, identityType: IdentityType };
         permissions: [];
     }
@@ -23,6 +25,7 @@ export const useBasicStore = defineStore('basic', {
             userId: null,
             username: '',
             avatar: '',
+            avatarUrl: '',
             credential: {},
             permissions: []
         }
@@ -30,6 +33,7 @@ export const useBasicStore = defineStore('basic', {
     actions: {
         setUserinfo(d: any) {
             this.userinfo = d;
+            this.userinfo.avatarUrl = getImageUrl(this.userinfo.avatar);
         },
         fetchUserinfo(): Promise<any> {
             return new Promise((resolve, reject) => {
