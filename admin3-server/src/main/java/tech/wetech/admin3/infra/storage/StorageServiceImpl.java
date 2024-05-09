@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.wetech.admin3.common.DomainEventPublisher;
 import tech.wetech.admin3.common.NanoId;
+import tech.wetech.admin3.common.StringUtils;
 import tech.wetech.admin3.sys.event.StorageConfigCreated;
 import tech.wetech.admin3.sys.event.StorageConfigDeleted;
 import tech.wetech.admin3.sys.event.StorageConfigMarkedAsDefault;
@@ -20,8 +21,10 @@ import tech.wetech.admin3.sys.service.StorageService;
 import tech.wetech.admin3.sys.service.dto.StorageFileDTO;
 
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import static tech.wetech.admin3.common.CommonResultStatus.FAIL;
 
@@ -30,6 +33,8 @@ import static tech.wetech.admin3.common.CommonResultStatus.FAIL;
  */
 @Service
 public class StorageServiceImpl implements StorageService {
+
+  private static final SecureRandom random = new SecureRandom();
 
   private final StorageConfigRepository storageConfigRepository;
   private final StorageFileRepository storageFileRepository;
@@ -155,21 +160,11 @@ public class StorageServiceImpl implements StorageService {
     String key = null;
     StorageFile storageFile = null;
     do {
-      key = getRandomString(5) + "_" + filename;
+      key = StringUtils.shuffle(UUID.randomUUID().toString().replaceAll("-", ""))
+        + "." + filename.substring(filename.lastIndexOf('.') + 1);
       storageFile = storageFileRepository.getByKey(key);
     } while (storageFile != null);
     return key;
-  }
-
-  public String getRandomString(Integer num) {
-    String base = "abcdefghijklmnopqrstuvwxyz0123456789";
-    Random random = new Random();
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < num; i++) {
-      int number = random.nextInt(base.length());
-      sb.append(base.charAt(number));
-    }
-    return sb.toString();
   }
 
   @Override

@@ -1,22 +1,36 @@
 package tech.wetech.admin3.common;
 
+import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @author cjbi
  */
 public class StringUtils {
 
+  private static final SecureRandom random = new SecureRandom();
+
   public static String getRandomString(Integer num) {
     String base = "abcdefghijklmnopqrstuvwxyz0123456789";
-    Random random = new Random();
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < num; i++) {
       int number = random.nextInt(base.length());
       sb.append(base.charAt(number));
     }
     return sb.toString();
+  }
+
+  public static String shuffle(String string) {
+    List<Character> characters = string.chars()
+      .mapToObj(c -> (char) c)
+      .collect(Collectors.toList());
+    Collections.shuffle(characters, random);
+    return characters.stream()
+      .map(String::valueOf)
+      .collect(Collectors.joining());
   }
 
   public static boolean isEmpty(Object str) {
