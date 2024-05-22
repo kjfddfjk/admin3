@@ -81,10 +81,8 @@ public class LocalSessionManager implements SessionManager {
 
   @Override
   public void invalidate(String key) {
-    Session session = cache.getIfPresent(key);
+    sessionRepository.deleteByToken(key);
     cache.invalidate(key);
-    assert session != null;
-    sessionRepository.delete(session);
   }
 
   @Override

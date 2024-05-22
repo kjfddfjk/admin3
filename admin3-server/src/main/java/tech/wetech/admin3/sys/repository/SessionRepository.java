@@ -31,4 +31,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
   @Query("from Session")
   Stream<Session> findAllStream();
+
+  @Transactional
+  void deleteByToken(String token);
 }
