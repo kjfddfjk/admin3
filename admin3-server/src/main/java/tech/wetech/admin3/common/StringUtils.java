@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author cjbi
@@ -12,15 +13,12 @@ import java.util.stream.Collectors;
 public class StringUtils {
 
   private static final SecureRandom random = new SecureRandom();
-
-  public static String getRandomString(Integer num) {
-    String base = "abcdefghijklmnopqrstuvwxyz0123456789";
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < num; i++) {
-      int number = random.nextInt(base.length());
-      sb.append(base.charAt(number));
-    }
-    return sb.toString();
+  private static final String BASE_CHARS = "QWERTYUIOPASDFGHJKLZXCVBNMabcdefghijklmnopqrstuvwxyz0123456789";
+  public static String getRandomString(Integer length) {
+    return IntStream.range(0, length)
+      .mapToObj(i -> BASE_CHARS.charAt(random.nextInt(BASE_CHARS.length())))
+      .map(String::valueOf)
+      .collect(Collectors.joining());
   }
 
   public static String shuffle(String string) {
