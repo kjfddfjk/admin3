@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.wetech.admin3.common.authz.RequiresPermissions;
 import tech.wetech.admin3.sys.model.Organization;
 import tech.wetech.admin3.sys.model.User;
+import tech.wetech.admin3.sys.model.UserCredential;
 import tech.wetech.admin3.sys.service.OrganizationService;
 import tech.wetech.admin3.sys.service.UserService;
 import tech.wetech.admin3.sys.service.dto.PageDTO;
@@ -70,12 +71,31 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 
-  record CreateUserRequest(@NotBlank String username, @NotNull User.Gender gender,
+  public record CreateUserRequest(@NotBlank String username, @NotNull User.Gender gender,
                            @NotBlank String avatar, Long organizationId) {
   }
 
-  record UpdateUserRequest(@NotNull User.Gender gender,
+  public record UpdateUserRequest(@NotNull User.Gender gender,
                            @NotBlank String avatar, Long organizationId) {
   }
+
+  @RequiresPermissions("user:reset")
+  @PostMapping("/{userId}:reset")
+  public ResponseEntity<UserCredential> resetUser(@PathVariable Long userId, @RequestBody @Valid  ResetUserRequest request) {
+    return ResponseEntity.ok(userService.reset(userId, request.identifier(), request.identityType(),
+        request.newCredential()));
+  }
+
+    public record ResetUserRequest(@NotBlank String identifier,
+                             UserCredential.IdentityType identityType,
+                                   @NotBlank String newCredential) {
+        //IdentityType 的默认实例
+      public ResetUserRequest(String identifier, UserCredential.IdentityType identityType
+      , String newCredential) {
+          this.identifier = identifier;
+          this.newCredential = newCredential;
+          this.identityType = identityType != null ? identityType : UserCredential.IdentityType.PASSWORD;
+        }
+    }
 
 }

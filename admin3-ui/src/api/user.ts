@@ -45,3 +45,12 @@ export function enableUser(userId: number) {
         method: 'post'
     });
 }
+
+export async function resetUserCredential(data: {userId: number; identifier: string;
+    newCredential: string; confirmCredential: string;}) {
+  return request({
+    url: `${BASE_URI}/users/${data.userId}:reset`,
+    method: 'post',
+    data: data
+  });
+}

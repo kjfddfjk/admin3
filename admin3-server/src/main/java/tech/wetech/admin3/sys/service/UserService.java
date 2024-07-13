@@ -1,5 +1,6 @@
 package tech.wetech.admin3.sys.service;
 
+import jakarta.annotation.Resource;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,8 @@ import tech.wetech.admin3.sys.event.UserUpdated;
 import tech.wetech.admin3.sys.exception.UserException;
 import tech.wetech.admin3.sys.model.Organization;
 import tech.wetech.admin3.sys.model.User;
+import tech.wetech.admin3.sys.model.UserCredential;
+import tech.wetech.admin3.sys.repository.UserCredentialRepository;
 import tech.wetech.admin3.sys.repository.UserRepository;
 import tech.wetech.admin3.sys.service.dto.OrgUserDTO;
 import tech.wetech.admin3.sys.service.dto.PageDTO;
@@ -19,6 +22,7 @@ import tech.wetech.admin3.sys.service.dto.UserinfoDTO;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,8 +36,11 @@ public class UserService {
 
   private final UserRepository userRepository;
 
-  public UserService(UserRepository userRepository) {
+  private final UserCredentialRepository userCredentialRepository;
+
+  public UserService(UserRepository userRepository, UserCredentialRepository userCredentialRepository) {
     this.userRepository = userRepository;
+    this.userCredentialRepository = userCredentialRepository;
   }
 
   @Transactional
@@ -113,4 +120,25 @@ public class UserService {
     userRepository.delete(user);
     DomainEventPublisher.instance().publish(new UserDeleted(user));
   }
+  @Transactional
+  public UserCredential reset(Long userId, String identifier, UserCredential.IdentityType type, String credential) {
+    Optional<UserCredential> oldCredential = userCredentialRepository.findCredential(identifier, type);
+    assert !oldCredential.isPresent() || oldCredential.get().getUser().getId().equals(userId);
+    // 随机用户密码
+    credential = StringUtils.isBlank(credential) ? StringUtils.getRandomString(10) : credential;
+    if(oldCredential.isPresent()) {
+        UserCredential userCredential = oldCredential.get();
+        userCredential.setCredential(userCredential.digestCredential(credential));
+        assert (userCredentialRepository.updateCredential(userCredential.getId(), userCredential.getCredential()) == 1);
+        return userCredential;
+    } else {
+      UserCredential newCredential = new UserCredential();
+      newCredential.setIdentifier(identifier);
+       newCredential.setCredential(newCredential.digestCredential(credential));
+      newCredential.setIdentityType(type);
+      newCredential.setUser(userRepository.getReferenceById(userId));
+      return userCredentialRepository.save(newCredential);
+    }
+  }
+
 }

@@ -111,6 +111,9 @@
                       </el-button>
                     </template>
                   </el-popconfirm>
+                  <el-button text :icon="RefreshLeft" @click="handleCredential(scope.row)" v-action:user:reset>
+                      更改密码
+                  </el-button>
                   <el-button text :icon="Edit" @click="handleEdit(scope.$index, scope.row)" v-action:user:update>
                     编辑
                   </el-button>
@@ -200,7 +203,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="头像">
-          <AvatarUpload :img-src="form.avatar" @on-select="onAvatarSelect"/>
+          <AvatarUpload :img-src="form.avatarUrl" @on-select="onAvatarSelect"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -237,14 +240,34 @@
 				</span>
       </template>
     </el-dialog>
+      <!-- 编辑用户凭证 -->
+      <el-dialog title="更改密码" v-model="editCredential" width="30%">
+          <el-form label-width="6rem;">
+              <el-form-item label="用户名">
+                  <el-input v-model="credentialForm.identifier" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="新密码">
+                  <el-input type="password" v-model="credentialForm.newCredential" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="确认新密码">
+                  <el-input type="password" v-model="credentialForm.confirmCredential" autocomplete="off"></el-input>
+              </el-form-item>
+          </el-form>
+          <template #footer>
+				<span class="dialog-footer">
+					<el-button @click="editCredential = false">取 消</el-button>
+					<el-button type="primary" @click="saveCredential">确 定</el-button>
+				</span>
+          </template>
+      </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import {reactive, ref, watch} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import {Delete, Edit, Lock, Plus, Search, Unlock} from '@element-plus/icons-vue';
-import {createUser, deleteUser, disableUser, enableUser, updateUser} from "../api/user";
+import {Delete, Edit, Lock, Plus, RefreshLeft, Search, Unlock} from '@element-plus/icons-vue';
+import {createUser, deleteUser, disableUser, enableUser, resetUserCredential, updateUser} from "../api/user";
 import {
   createOrganization,
   deleteOrganization,
@@ -254,7 +277,7 @@ import {
 } from "../api/organization";
 import cloneDeep from 'lodash/cloneDeep';
 import AvatarUpload from "../components/AvatarUpload.vue";
-import {getImageUrl, getStorageConfigList} from "../api/storage";
+import {getFileUrl, getStorageConfigList} from "../api/storage";
 
 interface OrgTreeNode {
   name: string
@@ -405,12 +428,27 @@ const getUserData = () => {
   }).then(res => {
     tableData.value = res.data.list.map((user: { avatar: string; }) => ({
       ...user,
-      avatarUrl: getImageUrl(user.avatar),
+      avatarUrl: getFileUrl(user.avatar),
     }));
     pageTotal.value = res.data.total;
   });
 };
 getUserData();
+
+const getUserCredential = () => {
+  getOrganizationUserList(selectedNode.value.id, {
+    page: query.pageIndex,
+    size: query.pageSize,
+    username: query.username || undefined,
+    state: query.state || undefined,
+  }).then(res => {
+    tableData.value = res.data.list.map((user: { avatar: string; }) => ({
+      ...user,
+      avatarUrl: getFileUrl(user.avatar),
+    }));
+    pageTotal.value = res.data.total;
+  });
+};
 
 // 查询操作
 const handleSearch = () => {
@@ -444,6 +482,9 @@ const addVisible = ref(false);
 // 表格编辑时弹窗和保存
 const editVisible = ref(false);
 
+// 表格编辑时弹窗和保存
+const editCredential = ref(false);
+
 class User {
   username = '';
   gender = 'MALE';
@@ -452,15 +493,22 @@ class User {
   organizationId = 1;
 }
 
+class UserCredential {
+  userId = 0;
+  identifier = '';
+  credential = '';
+  newCredential = '';
+  confirmCredential = '';
+  identityType = '';
+}
+
 let id: number = 0;
 let form = reactive(new User());
 watch(() => form.avatar, (newAvatar, oldAvatar) => {
-  console.log('form.avatar changed from', oldAvatar, 'to', newAvatar);
   if(newAvatar === oldAvatar || !newAvatar) {
     return;
   }
-  form.avatarUrl = getImageUrl(newAvatar);
-  console.log('form.AvatarUrl:', form.avatarUrl);
+  form.avatarUrl = getFileUrl(newAvatar);
 }, { immediate: true});
 
 const saveAdd = () => {
@@ -499,6 +547,29 @@ const handleEnable = (row: any) => {
     ElMessage.success(`启用成功`);
   });
 }
+
+let credentialForm = reactive(new UserCredential());
+const handleCredential = async (row: any) => {
+    credentialForm.userId = row.id;
+    credentialForm.identifier = row.username;
+    credentialForm.identityType = 'PASSWORD';
+    editCredential.value = true;
+}
+const saveCredential = async () => {
+    if(credentialForm.newCredential !== credentialForm.confirmCredential) {
+        ElMessage.error('两次密码不一致');
+        return;
+    }
+    editCredential.value = false;
+    try {
+        const res = await resetUserCredential(credentialForm);
+        ElMessage.success(`密码已重置`);
+    } catch (error) {
+        console.error('Error resetting user:', error);
+        ElMessage.error('重置失败，请稍后重试');
+    }
+};
+
 const onAvatarSelect = (imgUrl: string) => {
   form.avatar = imgUrl;
 }

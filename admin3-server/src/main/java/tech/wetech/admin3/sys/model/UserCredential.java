@@ -45,15 +45,11 @@ public class UserCredential extends BaseEntity {
   }
 
   public boolean doCredentialMatch(String credential) {
-    try {
       //TODO 未实现其他登录方式
-      if (this.getIdentityType() != IdentityType.PASSWORD || !SecurityUtil.md5(identifier, credential).equals(this.getCredential())) {
+      if (this.getIdentityType() != IdentityType.PASSWORD || !digestCredential(credential).equals(this.getCredential())) {
         return false;
       }
-    } catch (NoSuchAlgorithmException e) {
-      throw new BusinessException(CommonResultStatus.FAIL, "密码加密失败：" + e.getMessage());
-    }
-    return true;
+      return true;
   }
 
   public enum IdentityType {
@@ -101,4 +97,13 @@ public class UserCredential extends BaseEntity {
   public User getUser() {
     return user;
   }
+
+  public String digestCredential(String credential) {
+      try {
+          return SecurityUtil.md5(identifier, credential);
+      } catch (NoSuchAlgorithmException e) {
+          throw new RuntimeException(e);
+      }
+  }
+
 }
