@@ -25,6 +25,7 @@ admin3-server/HELP.md
 /dist/
 /nbdist/
 /.nb-gradle/
+/files/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -55,3 +56,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 /qodana.yaml
+application-*.yml
+/logs

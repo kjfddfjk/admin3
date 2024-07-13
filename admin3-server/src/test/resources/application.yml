@@ -11,9 +11,6 @@ spring:
     name: admin3
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@selforaclecloudatp_high
-    username: admin3
-    password: 1qaz@WSX#EDC
   sql:
     init:
       encoding: utf8

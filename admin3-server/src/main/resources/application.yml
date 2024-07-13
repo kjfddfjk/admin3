@@ -14,30 +14,33 @@ spring:
             increment_size_mismatch_strategy: FIX
   application:
     name: admin3
-  datasource:
-    url: jdbc:oracle:thin:@selforaclecloudatp_high
-    username: admin3
-    password: 1qaz@WSX#EDC
   sql:
     init:
       encoding: utf8
       data-locations: classpath:data.sql
       mode: never
       continue-on-error: true
+  datasource:
+    url: jdbc:oracle:thin:admin3@locahost:1521:xe
+    username: admin3
+    password: your_password
   data:
     web:
       pageable:
         one-indexed-parameters: true
     redis:
       database: 0
-      host: 192.168.192.173
-      port: 16379
+      host: localhost
+      port: 6379
+      password: your_password
   profiles:
     include: biz
 server:
   servlet:
     context-path: /admin3
-app:
-  oxr:
-    id: OXR_APP_ID
-# keytool -importcert -alias GglMySQLCACert -file server-ca.pem \ -keystore truststore -storepass 1qaz@WSX
+logging:
+  file:
+    name: logs/admin3.log            # 设置日志文件的名称
+  logback:
+    rollingpolicy:
+      max-history: 30
