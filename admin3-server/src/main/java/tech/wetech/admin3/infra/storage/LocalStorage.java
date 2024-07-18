@@ -73,8 +73,4 @@ public class LocalStorage implements Storage {
     }
   }
 
-  @Override
-  public String getUrl(String keyName) {
-    return config.getAddressWithEnv() + keyName;
-  }
 }

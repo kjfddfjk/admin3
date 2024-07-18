@@ -32,8 +32,6 @@ public class StorageFileDTO extends StorageFile {
 
   private String storageId;
 
-  private String url;
-
   @Override
   public String getKey() {
     return key;
@@ -104,11 +102,4 @@ public class StorageFileDTO extends StorageFile {
     this.storageId = storageId;
   }
 
-  public String getUrl() {
-    return url;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
 }

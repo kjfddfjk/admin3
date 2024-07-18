@@ -65,7 +65,7 @@ export function upload(data: { storageId?: string, files: any }) {
   });
 }
 
-export function getImageUrl(key: string): string {
+export function getFileUrl(key: string): string {
   return `${BASE_URI}/storage/fetch/${key}`;
 }
 

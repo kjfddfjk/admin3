@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {fetchUserinfo} from "../api";
-import {getImageUrl} from "../api/storage";
+import {getFileUrl} from "../api/storage";
 
 interface UserStore {
     userinfo: {
@@ -33,7 +33,7 @@ export const useBasicStore = defineStore('basic', {
     actions: {
         setUserinfo(d: any) {
             this.userinfo = d;
-            this.userinfo.avatarUrl = getImageUrl(this.userinfo.avatar);
+            this.userinfo.avatarUrl = getFileUrl(this.userinfo.avatar);
         },
         fetchUserinfo(): Promise<any> {
             return new Promise((resolve, reject) => {

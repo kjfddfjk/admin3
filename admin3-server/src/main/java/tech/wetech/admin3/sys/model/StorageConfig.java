@@ -1,11 +1,16 @@
 package tech.wetech.admin3.sys.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import tech.wetech.admin3.common.Constants;
 import tech.wetech.admin3.common.SessionItemHolder;
 import tech.wetech.admin3.common.StringUtils;
+import tech.wetech.admin3.infra.storage.ExtraConfig;
+import tech.wetech.admin3.infra.storage.OSSExtraConfig;
+import tech.wetech.admin3.infra.storage.S3ExtraConfig;
 import tech.wetech.admin3.sys.service.dto.UserinfoDTO;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +46,16 @@ public class StorageConfig extends BaseEntity {
 
   private String address;
 
+
+  private String region;
+
   private String storagePath;
 
   private String createUser;
 
   private LocalDateTime createTime;
+
+  private String extraConfigJson;
 
   @PrePersist
   protected void onCreate() {
@@ -54,7 +64,7 @@ public class StorageConfig extends BaseEntity {
     createUser = userInfo.username();
   }
 
-  public enum Type {
+    public enum Type {
     LOCAL, S3, OSS, OBS
   }
 
@@ -140,7 +150,15 @@ public class StorageConfig extends BaseEntity {
     this.address = address;
   }
 
-  public String getStoragePath() {
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getStoragePath() {
     return storagePath;
   }
 
@@ -165,7 +183,15 @@ public class StorageConfig extends BaseEntity {
     this.createTime = createTime;
   }
 
-  public String getAccessKeyWithEnv() {
+
+  public String getExtraConfigJson() {
+    return extraConfigJson;
+  }
+
+    public void setExtraConfigJson(String extraConfigJson) {
+        this.extraConfigJson = extraConfigJson;
+    }
+    public String getAccessKeyWithEnv() {
     return renderTemplate(accessKey);
   }
 
@@ -188,6 +214,29 @@ public class StorageConfig extends BaseEntity {
   public String getStoragePathWithEnv() {
     return renderTemplate(storagePath);
   }
+
+    public ExtraConfig getExtraConfig() {
+        assert type != null;
+        if(StringUtils.isBlank(extraConfigJson)) {
+            return null;
+        }
+        switch (type) {
+            case S3:
+                return parseJsonToClass(extraConfigJson, S3ExtraConfig.class);
+            case OSS:
+                return parseJsonToClass(extraConfigJson, OSSExtraConfig.class);
+            default:
+                throw new IllegalArgumentException("Unsupported type: " + type);
+        }
+    }
+    private <T extends ExtraConfig> T parseJsonToClass(String json, Class<T> clazz) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(json, clazz);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to parse JSON to " + clazz.getSimpleName(), e);
+        }
+    }
 
   private String renderTemplate(String template) {
     Map<Object, Object> attributes = new HashMap<>();

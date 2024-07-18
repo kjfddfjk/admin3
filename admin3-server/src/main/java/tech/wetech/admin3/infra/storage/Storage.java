@@ -24,5 +24,4 @@ public interface Storage {
 
   void delete(String filename);
 
-  String getUrl(String filename);
 }

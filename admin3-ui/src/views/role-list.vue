@@ -73,9 +73,9 @@
                   <template #default="scope">
                     <el-image
                       class="table-td-thumb"
-                      :src="scope.row.avatar"
+                      :src="scope.row.avatarUrl"
                       :z-index="10"
-                      :preview-src-list="[scope?.row?.avatar]"
+                      :preview-src-list="[scope?.row?.avatarUrl]"
                       preview-teleported
                     >
                     </el-image>
@@ -194,7 +194,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {reactive, ref, watch} from "vue";
 import {
   changeResources,
   changeUsers,
@@ -208,6 +208,7 @@ import {ElMessage, ElMessageBox, TabsPaneContext} from "element-plus";
 import {getResourceTree as reqResourceTree} from "../api/resource";
 import {Delete, Edit} from '@element-plus/icons-vue';
 import OrgSelect, {OrgSelectedData} from "../components/OrgSelect.vue";
+import {getFileUrl} from "../api/storage";
 
 const isOrgSelectShow = ref(false)
 
@@ -256,6 +257,8 @@ interface UserTableItem {
   userName: string;
   gender: string;
   state: string;
+  avatar: string;
+  avatarUrl: string;
   roles: { id: number, name: string }
 }
 
@@ -309,6 +312,11 @@ const getUserData = (roleId: number) => {
   });
 }
 getUserData(activeRoleId.value);
+watch(tableData, (newVal) => {
+  newVal.forEach((item) => {
+      item.avatarUrl = getFileUrl(item.avatar);
+  });
+}, { deep: true });
 
 
 // 分页导航
