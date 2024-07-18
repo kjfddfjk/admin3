@@ -21,7 +21,6 @@ import static tech.wetech.admin3.Constants.TOKEN_HEADER_NAME;
 /**
  * @author cjbi
  */
-@SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
 public class LogControllerTest extends AbstractIntegrationTest {

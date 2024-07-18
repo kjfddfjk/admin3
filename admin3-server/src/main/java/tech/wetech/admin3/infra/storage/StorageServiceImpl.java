@@ -1,5 +1,7 @@
 package tech.wetech.admin3.infra.storage;
 
+import ch.qos.logback.core.util.FileUtil;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -21,9 +23,7 @@ import tech.wetech.admin3.sys.service.StorageService;
 import tech.wetech.admin3.sys.service.dto.StorageFileDTO;
 
 import java.io.InputStream;
-import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import static tech.wetech.admin3.common.CommonResultStatus.FAIL;
@@ -34,7 +34,6 @@ import static tech.wetech.admin3.common.CommonResultStatus.FAIL;
 @Service
 public class StorageServiceImpl implements StorageService {
 
-  private static final SecureRandom random = new SecureRandom();
 
   private final StorageConfigRepository storageConfigRepository;
   private final StorageFileRepository storageFileRepository;
@@ -70,10 +69,15 @@ public class StorageServiceImpl implements StorageService {
       storageConfig.setId(id);
     } else {
       storageConfig = new StorageConfig();
-      storageConfig.setStorageId(NanoId.randomNanoId());
+      String storageId = NanoId.randomNanoId();
+      while(storageConfigRepository.getByStorageId(storageId) != null) {
+        storageId = NanoId.randomNanoId();
+      }
+      storageConfig.setStorageId(storageId);
     }
     storageConfig.setName(name);
     storageConfig.setType(type);
+    storageConfig.setDefaultFlag(false);
     storageConfig.setAccessKey(accessKey);
     storageConfig.setSecretKey(secretKey);
     storageConfig.setEndpoint(endpoint);
@@ -132,10 +136,8 @@ public class StorageServiceImpl implements StorageService {
     storageFile.setSize(contentLength);
     storageFile.setStorageId(storage.getId());
     storageFile = storageFileRepository.save(storageFile);
-    String url = storage.getUrl(key);
     StorageFileDTO dto = new StorageFileDTO();
     BeanUtils.copyProperties(storageFile, dto);
-    dto.setUrl(url);
     return dto;
   }
 
@@ -160,8 +162,7 @@ public class StorageServiceImpl implements StorageService {
     String key = null;
     StorageFile storageFile = null;
     do {
-      key = StringUtils.shuffle(UUID.randomUUID().toString().replaceAll("-", ""))
-        + "." + filename.substring(filename.lastIndexOf('.') + 1);
+      key = NanoId.randomNanoId() + "." + filename.substring(filename.lastIndexOf('.') + 1);
       storageFile = storageFileRepository.getByKey(key);
     } while (storageFile != null);
     return key;
