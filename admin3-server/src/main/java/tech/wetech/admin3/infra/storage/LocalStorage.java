@@ -26,7 +26,7 @@ public class LocalStorage implements Storage {
     try {
       Files.createDirectories(rootLocation);
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error("unable create directories {}", this.rootLocation, e);
     }
   }
 
