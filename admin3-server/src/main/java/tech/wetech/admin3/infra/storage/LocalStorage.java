@@ -1,11 +1,10 @@
 package tech.wetech.admin3.infra.storage;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.wetech.admin3.sys.model.StorageConfig;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +14,7 @@ import java.nio.file.StandardCopyOption;
  * @author cjbi
  */
 public class LocalStorage implements Storage {
-
+  private static final Logger log = LoggerFactory.getLogger(LocalStorage.class);
   private final StorageConfig config;
 
   private final Path rootLocation;
@@ -69,7 +68,7 @@ public class LocalStorage implements Storage {
     try {
       Files.delete(file);
     } catch (IOException e) {
-      e.printStackTrace();
+      log.error(e.getMessage(), e);
     }
   }
 
