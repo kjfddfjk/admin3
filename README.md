@@ -58,8 +58,8 @@
 
 ## 软件需求
 
-- JDK 17
-- MySQL 8.0
+- JDK 21
+- Oracle DB 11g+
 - Maven 3.6.0+
 
 ## 本地部署
