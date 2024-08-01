@@ -17,9 +17,9 @@ public interface StorageService {
 
   StorageConfig getConfig(Long id);
 
-  StorageConfig createConfig(String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String address, String storagePath);
+  StorageConfig createConfig(         String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String region, String address, String storagePath, String extraConfigJson);
 
-  StorageConfig updateConfig(Long id, String name, StorageConfig.Type type, String endpoint, String bucketName, String accessKey, String secretKey, String address, String storagePath);
+  StorageConfig updateConfig(Long id, String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String region, String address, String storagePath, String extraConfigJson);
 
   void deleteConfig(StorageConfig storageConfig);
 

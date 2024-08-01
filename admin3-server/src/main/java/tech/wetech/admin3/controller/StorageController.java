@@ -50,10 +50,12 @@ public class StorageController {
       request.accessKey(),
       request.secretKey(),
       request.bucketName(),
+      request.region(),
       request.address(),
-      request.storagePath()
+      request.storagePath(),
+      request.extraConfigJson()
     );
-    return new ResponseEntity<>(config, HttpStatus.CREATED);
+    return new ResponseEntity(config, HttpStatus.CREATED);
   }
 
   @PutMapping("/configs/{id}")
@@ -67,8 +69,10 @@ public class StorageController {
       request.accessKey(),
       request.secretKey(),
       request.bucketName(),
+      request.region(),
       request.address(),
-      request.storagePath()
+      request.storagePath(),
+      request.extraConfigJson()
     );
     return ResponseEntity.ok(config);
   }
@@ -159,8 +163,10 @@ public class StorageController {
                               String accessKey,
                               String secretKey,
                               String bucketName,
+                              String region,
                               String address,
-                              String storagePath
+                              String storagePath,
+                              String extraConfigJson
   ) {
 
   }

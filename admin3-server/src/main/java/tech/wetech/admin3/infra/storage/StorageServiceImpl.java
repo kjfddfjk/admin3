@@ -56,13 +56,13 @@ public class StorageServiceImpl implements StorageService {
 
   @Override
   @Transactional
-  public StorageConfig createConfig(String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String address, String storagePath) {
-    StorageConfig config = storageConfigRepository.save(buildConfig(null, name, type, endpoint, bucketName, accessKey, secretKey, address, storagePath));
+  public StorageConfig createConfig(String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String region, String address, String storagePath, String extraConfigJson) {
+    StorageConfig config = storageConfigRepository.save(buildConfig(null, name, type, endpoint, accessKey, secretKey, bucketName, region, address, storagePath, extraConfigJson));
     DomainEventPublisher.instance().publish(new StorageConfigCreated(config));
     return config;
   }
 
-  private StorageConfig buildConfig(Long id, String name, StorageConfig.Type type, String endpoint, String bucketName, String accessKey, String secretKey, String address, String storagePath) {
+  private StorageConfig buildConfig(Long id, String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String region, String address, String storagePath, String extraConfigJson) {
     StorageConfig storageConfig;
     if (id != null) {
       storageConfig = getConfig(id);
@@ -78,19 +78,21 @@ public class StorageServiceImpl implements StorageService {
     storageConfig.setName(name);
     storageConfig.setType(type);
     storageConfig.setDefaultFlag(false);
+    storageConfig.setEndpoint(endpoint);
     storageConfig.setAccessKey(accessKey);
     storageConfig.setSecretKey(secretKey);
-    storageConfig.setEndpoint(endpoint);
     storageConfig.setBucketName(bucketName);
+    storageConfig.setRegion(region);
     storageConfig.setAddress(address);
     storageConfig.setStoragePath(storagePath);
+    storageConfig.setExtraConfigJson(extraConfigJson);
     return storageConfig;
   }
 
   @Override
   @Transactional
-  public StorageConfig updateConfig(Long id, String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String address, String storagePath) {
-    StorageConfig config = storageConfigRepository.save(buildConfig(id, name, type, endpoint, bucketName, accessKey, secretKey, address, storagePath));
+  public StorageConfig updateConfig(Long id, String name, StorageConfig.Type type, String endpoint, String accessKey, String secretKey, String bucketName, String region, String address, String storagePath, String extraConfigJson) {
+    StorageConfig config = storageConfigRepository.save(buildConfig(id, name, type, endpoint, bucketName, accessKey, secretKey, region, address, storagePath, extraConfigJson));
     DomainEventPublisher.instance().publish(new StorageConfigUpdated(config));
     return config;
   }

@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <div class="handle-box">
-        <el-button type="primary" :icon="Plus" @click="addVisible = true;Object.assign(form, new StorageImpl());"
+        <el-button type="primary" :icon="Plus" @click="dialogVisible = true;Object.assign(form, new StorageImpl());dialogTitle='新增'"
                    v-action:storage:create>
           新增对象存储
         </el-button>
@@ -34,7 +34,7 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button-group>
-              <el-button text :icon="Edit" @click="handleEdit(scope.row)" v-action:storage:update>
+              <el-button text :icon="Edit" @click="dialogVisible = true;handleEdit(scope.row);dialogTitle='修改'" v-action:storage:update>
                 编辑
               </el-button>
               <el-button text :icon="Delete" class="red" @click="handleDelete(scope.row)" v-action:storage:delete>
@@ -46,8 +46,8 @@
       </el-table>
     </div>
 
-    <!-- 新增弹出框 -->
-    <el-dialog title="新增" v-model="addVisible" width="35%">
+    <!-- 弹出框 -->
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="35%">
       <el-form label-width="100px">
         <el-form-item label="名称">
           <el-input v-model="form.name"/>
@@ -63,6 +63,9 @@
         <el-alert title="以下所有输入都支持环境变量，使用语法为 {{VARIABLE_NAME}}" show-icon center :closable="false" style="margin-bottom: 18px"/>
         <el-form-item label="Endpoint" v-if="form.type!=='LOCAL'">
           <el-input v-model="form.endpoint" placeholder="对象存储资源的Endpoint"/>
+        </el-form-item>
+        <el-form-item label="Region" v-if="form.type!=='LOCAL'">
+          <el-input v-model="form.region" placeholder="对象存储资源的Region"/>
         </el-form-item>
         <el-form-item label="Bucket 名称" v-if="form.type!=='LOCAL'">
           <el-input v-model="form.bucketName" placeholder="对象存储资源的桶名称"/>
@@ -79,53 +82,14 @@
         <el-form-item label="存储目录">
           <el-input v-model="form.storagePath" placeholder="不填写，默认存储到 files 目录下"/>
         </el-form-item>
-      </el-form>
-      <template #footer>
-				<span class="dialog-footer">
-					<el-button @click="addVisible = false">取 消</el-button>
-					<el-button type="primary" @click="handleCreateConfig">确 定</el-button>
-				</span>
-      </template>
-    </el-dialog>
-
-    <!-- 修改弹出框 -->
-    <el-dialog title="新增" v-model="editVisible" width="35%">
-      <el-form label-width="100px">
-        <el-form-item label="名称">
-          <el-input v-model="form.name"/>
-        </el-form-item>
-        <el-form-item label="类型">
-          <el-radio-group v-model="form.type" size="small" @change="handleTypeChange">
-            <el-radio-button label="OSS">阿里云 OSS</el-radio-button>
-            <el-radio-button label="OBS">华为云 OBS</el-radio-button>
-            <el-radio-button label="S3">其他 S3 协议</el-radio-button>
-            <el-radio-button label="LOCAL">本地</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-alert title="以下所有输入都支持环境变量，使用语法为 {{VARIABLE_NAME}}" show-icon center :closable="false" style="margin-bottom: 18px"/>
-        <el-form-item label="Endpoint" v-if="form.type!=='LOCAL'">
-          <el-input v-model="form.endpoint" placeholder="对象存储资源的Endpoint"/>
-        </el-form-item>
-        <el-form-item label="Bucket 名称" v-if="form.type!=='LOCAL'">
-          <el-input v-model="form.bucketName" placeholder="对象存储资源的桶名称"/>
-        </el-form-item>
-        <el-form-item label="AccessKey" v-if="form.type!=='LOCAL'">
-          <el-input v-model="form.accessKey"/>
-        </el-form-item>
-        <el-form-item label="SecretKey" v-if="form.type!=='LOCAL'">
-          <el-input v-model="form.secretKey"/>
-        </el-form-item>
-        <el-form-item label="访问地址">
-          <el-input v-model="form.address"/>
-        </el-form-item>
-        <el-form-item label="存储目录">
-          <el-input v-model="form.storagePath" placeholder="不填写，默认存储到 files 目录下"/>
+        <el-form-item label="额外配置" v-if="form.type!=='LOCAL'">
+          <el-input v-model="form.extraConfigJson"/>
         </el-form-item>
       </el-form>
       <template #footer>
 				<span class="dialog-footer">
-					<el-button @click="editVisible = false">取 消</el-button>
-					<el-button type="primary" @click="handleUpdateConfig">确 定</el-button>
+					<el-button @click="dialogVisible = false">取 消</el-button>
+					<el-button type="primary" @click="handleSubmitConfig">确 定</el-button>
 				</span>
       </template>
     </el-dialog>
@@ -153,10 +117,12 @@ interface Storage {
   endpoint?: string;
   accessKey?: string;
   secretKey?: string;
-  bucketName?: string;
+  bucketName?: string
+  region?: string;
   defaultFlag?: boolean;
   address?: string;
   storagePath?: string;
+  extraConfigJson?: string | null;
   createUser?: string;
   createTime?: string;
 }
@@ -170,16 +136,18 @@ class StorageImpl implements Storage {
   accessKey = '';
   secretKey = '';
   bucketName = '';
+  region = '';
   defaultFlag = false;
   address = '';
   createUser = '';
   createTime = '';
 }
 
-const addVisible = ref<boolean>(false);
-const editVisible = ref<boolean>(false);
+const dialogVisible = ref<boolean>(false);
 
 let form = reactive<Storage>(new StorageImpl());
+
+let dialogTitle = ref<string>();
 
 const tableData = ref<Storage[]>([]);
 
@@ -203,8 +171,8 @@ const handleEdit = (record: any) => {
   form.bucketName = record.bucketName;
   form.defaultFlag = record.defaultFlag;
   form.address = record.address;
-
-  editVisible.value = true;
+  form.region = record.region;
+  form.extraConfigJson = record.extraConfigJson;
 }
 
 const handleDelete = (record: any) => {
@@ -215,7 +183,6 @@ const handleDelete = (record: any) => {
       getData();
       ElMessage.success('删除成功');
     });
-  }).catch(() => {
   });
 
 }
@@ -230,30 +197,27 @@ const handleTypeChange = () => {
       Object.assign(form, {endpoint: 'obs.cn-north-4.myhuaweicloud.com'});
       break;
     default:
-      Object.assign(form, {endpoint: ''})
+      Object.assign(form, {endpoint: '', extraConfigJson: '{"pathStyleAccessEnabled":false,"chunkedEncodingEnabled":true}'})
   }
 }
 
-const handleCreateConfig = () => {
-  createStorageConfig(form).then(res => {
+const handleSubmitConfig = () => {
+  let promise = (!!form.id && form.id > 0) ? updateStorageConfig(form.id, form)
+    : createStorageConfig(form);
+  promise.then(() => {
     getData();
-    ElMessage.success('新增成功');
-    addVisible.value = false;
-  })
-}
-
-const handleUpdateConfig = () => {
-  updateStorageConfig(form.id || -1, form).then(res => {
-    getData();
-    ElMessage.success('修改成功');
-    editVisible.value = false;
+    ElMessage.success(`${dialogTitle.value}成功`);
+    dialogVisible.value = false;
+  }).catch(res => {
+    ElMessage.error(`${res.value}失败`);
   });
 }
 
 const handleMarkAsDefaultConfig = (record: any) => {
   markAsDefaultConfig(record.id).then(res => {
     getData();
-  })
+    ElMessage.success('设置成功');
+  });
 }
 
 

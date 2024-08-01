@@ -46,7 +46,6 @@ public class StorageConfig extends BaseEntity {
 
   private String address;
 
-
   private String region;
 
   private String storagePath;
@@ -188,10 +187,10 @@ public class StorageConfig extends BaseEntity {
     return extraConfigJson;
   }
 
-    public void setExtraConfigJson(String extraConfigJson) {
+  public void setExtraConfigJson(String extraConfigJson) {
         this.extraConfigJson = extraConfigJson;
     }
-    public String getAccessKeyWithEnv() {
+  public String getAccessKeyWithEnv() {
     return renderTemplate(accessKey);
   }
 
