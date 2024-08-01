@@ -1,4 +1,4 @@
-import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import axios, {AxiosError, AxiosInstance, InternalAxiosRequestConfig, AxiosResponse} from 'axios';
 import {ElMessage} from "element-plus";
 import router from "../router";
 
@@ -7,7 +7,7 @@ const service: AxiosInstance = axios.create({
 });
 
 service.interceptors.request.use(
-    (config: AxiosRequestConfig) => {
+    (config: InternalAxiosRequestConfig<any>) => {
         const headerToken = localStorage.getItem('token');
         if (headerToken) {
             // @ts-ignore
@@ -23,20 +23,19 @@ service.interceptors.request.use(
 );
 
 service.interceptors.response.use(
-    (response: AxiosResponse) => {
-        if (response.status === 200) {
+    (response: AxiosResponse<any, any>) => {
+        if (response.status >= 200 && response.status < 300) {
             return response;
         } else {
-            Promise.reject();
+          return Promise.reject(response);
         }
     },
-    (error: AxiosError) => {
+    (error: AxiosError<any, any>) => {
         console.log(error);
         if (error.response?.status === 401) {
             localStorage.removeItem('token');
-            router.push('/login');
+            router.push('/login').catch(() => {});
         }
-        // @ts-ignore
         ElMessage.error(error.response?.data?.message);
         return Promise.reject();
     }
