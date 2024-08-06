@@ -36,6 +36,7 @@ const props = defineProps(['imgSrc']);
 const emits = defineEmits(['onSelect']);
 const avatarImg = ref('avatar.jpg');
 const cropImg = ref('avatar.jpg');
+const fileName = ref('avatar.png');
 
 const dialogVisible = ref(false);
 const cropper: any = ref();
@@ -44,7 +45,7 @@ const showDialog = () => {
 }
 
 const setImage = (e: any) => {
-  const file = e.target.files[0];
+  const file : File = e.target.files[0];
   if (!file.type.includes('image/')) {
     return;
   }
@@ -55,6 +56,7 @@ const setImage = (e: any) => {
     cropper.value && cropper.value.replace(event.target.result);
   };
   reader.readAsDataURL(file);
+  fileName.value = file.name;
 }
 const cropImage = () => {
   cropImg.value = cropper.value.getCroppedCanvas().toDataURL();
@@ -72,7 +74,7 @@ const saveAvatar = () => {
   fetch(cropImg.value)
     .then(response => response.blob())
     .then(blob => {
-      const file = new File([blob], "avatar.png", {type: blob.type})
+      const file = new File([blob], fileName.value, {type: blob.type})
       upload({files: file}).then(res => {
         emits('onSelect', res.data[0]?.key);
 
